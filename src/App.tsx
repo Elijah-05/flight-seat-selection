@@ -1,38 +1,40 @@
+import { useState } from "react";
 import Seat from "./components/Seat";
-
-type SeatPropertyTypes = {
-  id: string;
-  status: "available" | "selected" | "unavailable";
-};
+import allSeats from "./seats";
 
 const App = () => {
-  const allSeats: SeatPropertyTypes[][] = [
-    [
-      {
-        id: "1A",
-        status: "available",
-      },
-      {
-        id: "1A",
-        status: "selected",
-      },
-      {
-        id: "1A",
-        status: "available",
-      },
-      {
-        id: "1A",
-        status: "unavailable",
-      },
-    ],
-  ];
+  const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
+
+  function toggleSeatSelection(seatID: string) {
+    if (selectedSeats.includes(seatID)) {
+      setSelectedSeats((prev) => prev.filter((id) => id !== seatID));
+    } else {
+      setSelectedSeats((prev) => [...prev, seatID]);
+    }
+  }
+
   return (
-    <div className="flex gap-3">
-      {allSeats.map((columnSeat) =>
-        columnSeat.map((rowSeat) => (
-          <Seat status={rowSeat.status} id={rowSeat.id} onClick={() => null} />
-        ))
-      )}
+    <div className="flex flex-col gap-4">
+      {allSeats.map((columnSeat, i) => (
+        <div key={i} className="flex gap-1">
+          {columnSeat.map((rowSeat, j) =>
+            rowSeat ? (
+              <Seat
+                key={j}
+                status={rowSeat.status}
+                id={rowSeat.id}
+                onClick={() =>
+                  rowSeat.status === "available" &&
+                  toggleSeatSelection(rowSeat.id)
+                }
+                isSelected={selectedSeats.includes(rowSeat.id)}
+              />
+            ) : (
+              <div key={j} className="w-16" />
+            )
+          )}
+        </div>
+      ))}
     </div>
   );
 };

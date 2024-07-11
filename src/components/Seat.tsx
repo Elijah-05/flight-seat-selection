@@ -1,30 +1,42 @@
 type SeatProps = {
   id: string;
-  status: "available" | "selected" | "unavailable";
+  status: string;
   onClick: (id: string) => void;
+  isSelected: boolean;
 };
 
-const Seat = ({ id, status, onClick }: SeatProps) => {
+const Seat = ({ id, status, onClick, isSelected }: SeatProps) => {
   const seatCharacter = () => {
     switch (status) {
       case "available":
-        return "bg-green-600 cursor-pointer";
-      case "selected":
-        return "bg-blue-600";
+        return `${isSelected ? "bg-[#5c6bc0]" : "bg-[#a9a9a9] cursor-pointer"}`;
+      case "occupied":
+        return "bg-[#66bb6a] cursor-pointer";
       case "unavailable":
-        return "bg-gray-400 cursor-not-allowed";
+        return "bg-[#545454] cursor-not-allowed";
+      case "reserved":
+        return "bg-[#ffa726] cursor-not-allowed";
+      case "vip":
+        return "bg-[#5c6bc0] cursor-not-allowed";
       default:
         return "bg-red-400";
     }
   };
 
   return (
-    <div className=" active:scale-[0.98] transition-all"
-    onClick={() => status === 'available' && onClick(id)}>
-      <div className={`w-20 h-16 rounded-lg ${seatCharacter()}`}>
+    <div
+      className={`${
+        status !== "unavailable" && "active:scale-[0.98]"
+      } transition-all select-none`}
+      onClick={() => status === "available" && onClick(id)}
+    >
+      <div
+        className={`relative w-20 mt-[30%] h-16 rounded-lg ${seatCharacter()} grid place-content-center`}
+      >
         <div
-          className={`w-[60%] h-[30%] mx-auto -translate-y-full rounded-t-lg ${seatCharacter()}`}
+          className={`absolute w-[60%] h-[30%] right-1/2 translate-x-1/2 -translate-y-full rounded-t-lg ${seatCharacter()}`}
         />
+        <span className="font-semibold drop-shadow-lg">{id}</span>
       </div>
     </div>
   );
