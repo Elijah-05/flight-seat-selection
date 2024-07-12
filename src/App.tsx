@@ -39,20 +39,25 @@ const App = () => {
         />
         <SeatDescription color="bg-[#545454]" label="Unavailable" />
       </div>
-      <div className="mt-2 w-fit mx-auto space-x-2">
-        <select
-          onChange={({ target: { value } }) => handleSelectionAmount(+value)}
-          value={selectionAmount}
-          name="seatSelectionAmount"
-          id="selectionAmount"
-          className="bg-white text-black rounded-md p-2"
-        >
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((opt) => (
-            <option key={opt} value={opt}>
-              {opt}
-            </option>
-          ))}
-        </select>
+      <div className="mt-2 flex w-fit mx-auto space-x-2">
+        <div className="">
+          <span className="bg-slate-100 text-black py-[9px] px-2 rounded-l-md">
+            Person
+          </span>
+          <select
+            onChange={({ target: { value } }) => handleSelectionAmount(+value)}
+            value={selectionAmount}
+            name="seatSelectionAmount"
+            id="selectionAmount"
+            className="bg-white text-black rounded-r-md p-2"
+          >
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((opt) => (
+              <option key={opt} value={opt}>
+                {opt}
+              </option>
+            ))}
+          </select>
+        </div>
         <button
           className="bg-red-500 py-2 px-4 rounded-md active:scale-[0.98] transition-all"
           onClick={() => setSelectedSeats([])}
