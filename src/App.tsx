@@ -2,6 +2,8 @@ import { useState } from "react";
 import Seat from "./components/Seat";
 import allSeats from "./seats";
 import SeatDescription from "./components/SeatDescription";
+import planeLayout from "./assets/image/Vector Smart Object copy 2.png";
+// import planeLayout from "./assets/SVG/Asset 2.svg";
 
 const App = () => {
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
@@ -27,8 +29,10 @@ const App = () => {
     setSelectionAmount(amount);
   }
 
+  console.log("all seats: ", allSeats.length);
+
   return (
-    <div className=" px-4 pb-10 pt-2 w-fit">
+    <div className=" px-4 pb-10 pt-2 w-full">
       <div className="flex justify-evenly gap-4">
         <SeatDescription color="bg-[#a9a9a9]" label="Available" />
         <SeatDescription color="bg-[#9e0000]" label="Occupied" />
@@ -65,27 +69,39 @@ const App = () => {
           Clear Selection
         </button>
       </div>
-      <div className="flex flex-col gap-4 mt-10 w-fit">
-        {allSeats.map((columnSeat, i) => (
-          <div key={i} className="flex gap-1">
-            {columnSeat.map((rowSeat, j) =>
-              rowSeat ? (
-                <Seat
-                  key={j}
-                  status={rowSeat.status}
-                  id={rowSeat.id}
-                  onClick={() =>
-                    rowSeat.status === "available" &&
-                    toggleSeatSelection(rowSeat.id)
-                  }
-                  isSelected={selectedSeats.includes(rowSeat.id)}
-                />
-              ) : (
-                <div key={j} className="w-16" />
-              )
-            )}
-          </div>
-        ))}
+      <div
+        className="relative mt-10 w-[1500px]"
+        // style={{
+        //   backgroundImage: `url(${planeLayout})`,
+        // }}
+      >
+        <img
+          src={planeLayout}
+          alt=""
+          className="w-full o utline outline-green-500"
+        />
+        <div className="absolute space-y-2 -mr-1 right-1/2 translate-x-1/2 top-[700px]">
+          {allSeats.map((columnSeat, i) => (
+            <div key={i} className="flex items-center">
+              {columnSeat.map((rowSeat, j) =>
+                rowSeat ? (
+                  <Seat
+                    key={j}
+                    status={rowSeat.status}
+                    id={rowSeat.id}
+                    onClick={() =>
+                      rowSeat.status === "available" &&
+                      toggleSeatSelection(rowSeat.id)
+                    }
+                    isSelected={selectedSeats.includes(rowSeat.id)}
+                  />
+                ) : (
+                  <div key={j} className="w-8" />
+                )
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
