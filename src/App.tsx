@@ -35,14 +35,13 @@ const App = () => {
   return (
     <div className=" px-4 pb-10 pt-2 w-fit">
       <div className="flex justify-evenly gap-4">
-        <SeatDescription color="bg-[#a9a9a9]" label="Available" />
-        <SeatDescription color="bg-[#9e0000]" label="Occupied" />
-        <SeatDescription color="bg-[#e2b11d]" label="VIP" />
+        <SeatDescription color="bg-[#A8D5BA]" label="Available" />
+        <SeatDescription color="bg-[#F3A6A6]" label="Occupied" />
         <SeatDescription
-          color="bg-[#45ba4f] outline-2 outline-dashed"
+          color="bg-[#5A92C6] outline-2 outline-dashed"
           label="Your Selection"
         />
-        <SeatDescription color="bg-[#545454]" label="Unavailable" />
+        <SeatDescription color="bg-[#D8D8D8]" label="Unavailable" />
       </div>
       <div className="grid grid-cols-2 lg:grid-cols-5 place-content-center gap-10 mt-6">
         <div className="flex items-center gap-2">
