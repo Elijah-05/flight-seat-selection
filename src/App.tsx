@@ -3,6 +3,7 @@ import Seat from "./components/Seat";
 import allSeats from "./seats";
 import SeatDescription from "./components/SeatDescription";
 import planeLayout from "./assets/image/Vector Smart Object copy 2.png";
+import { HandicapIcon, NoHandicapIcon, TriangleIcon } from "./assets";
 // import planeLayout from "./assets/SVG/Asset 2.svg";
 
 const App = () => {
@@ -32,7 +33,7 @@ const App = () => {
   console.log("all seats: ", allSeats.length);
 
   return (
-    <div className=" px-4 pb-10 pt-2 w-full">
+    <div className=" px-4 pb-10 pt-2 w-fit">
       <div className="flex justify-evenly gap-4">
         <SeatDescription color="bg-[#a9a9a9]" label="Available" />
         <SeatDescription color="bg-[#9e0000]" label="Occupied" />
@@ -43,7 +44,29 @@ const App = () => {
         />
         <SeatDescription color="bg-[#545454]" label="Unavailable" />
       </div>
-      <div className="mt-2 flex w-fit mx-auto space-x-2">
+      <div className="grid grid-cols-2 lg:grid-cols-5 place-content-center gap-10 mt-6">
+        <div className="flex items-center gap-2">
+          <div className="h-2 w-10 bg-gray-900" />
+          <span className="text-black">SEAT WITH IN ARM TRAY</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="h-5 w-5 rounded-full bg-gray-900" />
+          <span className="text-black">SEAT WITH NO RECLINE</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <TriangleIcon className="text-black text-2xl" />
+          <span className="text-black">SEAT WITH NO BREAK OVER</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <HandicapIcon className="text-black text-3xl" />
+          <span className="text-black">HANDICAP ARM REST</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <NoHandicapIcon className="text-black text-3xl" />
+          <span className="text-black">UNSUITABLE FOR H/CAP</span>
+        </div>
+      </div>
+      <div className="mt-4 flex w-fit mx-auto space-x-2">
         <div className="">
           <span className="bg-slate-100 text-black py-[9px] px-2 rounded-l-md">
             Person
@@ -69,32 +92,30 @@ const App = () => {
           Clear Selection
         </button>
       </div>
-      <div
-        className="relative mt-10 w-[1500px]"
-        // style={{
-        //   backgroundImage: `url(${planeLayout})`,
-        // }}
-      >
+      <div className="relative mt-10 w-[1080px]">
         <img
           src={planeLayout}
           alt=""
           className="w-full o utline outline-green-500"
         />
-        <div className="absolute space-y-2 -mr-1 right-1/2 translate-x-1/2 top-[700px]">
+        <div className="absolute space-y-2 right-1/2 translate-x-1/2 top-[680px]">
           {allSeats.map((columnSeat, i) => (
             <div key={i} className="flex items-center">
               {columnSeat.map((rowSeat, j) =>
                 rowSeat ? (
-                  <Seat
-                    key={j}
-                    status={rowSeat.status}
-                    id={rowSeat.id}
-                    onClick={() =>
-                      rowSeat.status === "available" &&
-                      toggleSeatSelection(rowSeat.id)
-                    }
-                    isSelected={selectedSeats.includes(rowSeat.id)}
-                  />
+                  rowSeat.hideSeat ? (
+                    <div className="w-16" />
+                  ) : (
+                    <Seat
+                      key={j}
+                      seatData={rowSeat}
+                      onClick={() =>
+                        rowSeat.status === "available" &&
+                        toggleSeatSelection(rowSeat.id)
+                      }
+                      isSelected={selectedSeats.includes(rowSeat.id)}
+                    />
+                  )
                 ) : (
                   <div key={j} className="w-8" />
                 )

@@ -1,45 +1,89 @@
+import { HandicapIcon, NoHandicapIcon, TriangleIcon } from "../assets";
+import { SeatPropertyTypes } from "../type";
+
 type SeatProps = {
-  id: string;
-  status: string;
+  seatData: SeatPropertyTypes;
   onClick: (id: string) => void;
   isSelected: boolean;
 };
 
-const Seat = ({ id, status, onClick, isSelected }: SeatProps) => {
+const Seat = ({ seatData, onClick, isSelected }: SeatProps) => {
+  const {
+    id,
+    status,
+    armTrayLeft,
+    armTrayRight,
+    handicapArmRest,
+    hideSeat,
+    noBreakOver,
+    noRecline,
+    unsuitableForHandicap,
+  } = seatData;
+
   const seatCharacter = () => {
     switch (status) {
       case "available":
         return `${
           isSelected
-            ? "bg-[#45ba4f] outline-2 outline-dashed"
-            : "bg-[#a9a9a9] cursor-pointer"
+            ? "bg-[#5A92C6] outline-[1.5px] outline-dashed outline-green-600"
+            : "bg-[#A8D5BA] group-hover:bg-[#7cc097] cursor-pointer"
         }`;
       case "occupied":
-        return "bg-[#9e0000] cursor-pointer";
+        return "bg-[#F3A6A6] cursor-not-allowe";
       case "unavailable":
-        return "bg-[#545454] cursor-not-allowed";
-      case "vip":
-        return "bg-[#e2b11d] cursor-not-allowed";
+        return "bg-[#D8D8D8] cursor-not-allowe";
       default:
-        return "bg-red-100";
+        return "bg-[#D8D8D8] cursor-not-allowe";
     }
   };
 
   return (
     <div
-      className={`${
+      className={`group ${
         status !== "unavailable" && "active:scale-[0.98]"
       } transition-all select-none duration-500`}
-      onClick={() => status === "available" && onClick(id)}
+      onClick={() => status === "available" && !hideSeat && onClick(id)}
     >
       <div
-        className={`relative w-16 mt -[30%] h-[47px] rounded-lg ${seatCharacter()} border border-b-0 border-gray-600 grid place-content-center transition-all`}
+        className={`relative w-16 mt -[30%] h-[47px] rounded-lg ${seatCharacter()} border border-b-0 grid place-content-center transition-all`}
       >
-        <div className="absolute bg-slate-100 left-0 bottom-0 h-[80%] border border-gray-600 rounded-t-md w-2 -translate-x-1/2"/>
-        <div className="absolute bg-slate-100 right-0 bottom-0 h-[80%] border border-gray-600 rounded-t-md w-2 translate-x-1/2"/>
-        <span className="font-semibold drop-shadow-lg">{id}</span>
+        <div
+          className={`absolute ${
+            armTrayLeft ? "bg-gray-800" : "bg-slate-100"
+          } left-0 bottom-0 h-[80%] border border-gray-600 rounded-t-md w-2 -translate-x-1/2 `}
+        />
+        <div
+          className={`absolute ${
+            armTrayRight ? "bg-gray-800" : "bg-slate-100"
+          } right-0 bottom-0 h-[80%] border border-gray-600 rounded-t-md w-2 -mr-[1.5px] translate-x-1/2 `}
+        />
+        {handicapArmRest ? (
+          <HandicapIcon className={`text-2xl ${
+            isSelected ? "text-white" : "text-blue-600"
+          } -mb-1`} />
+        ) : (
+          unsuitableForHandicap && (
+            <NoHandicapIcon className={`text-[21px] -mb-1 ${
+              isSelected ? "text-white" : "text-red-600"
+            } mt-1`} />
+          )
+        )}
+        <span
+          className={`font-semibold drop-shadow-lg ${
+            isSelected ? "text-white" : "text-black"
+          }`}
+        >
+          {id}
+        </span>
       </div>
-      <div className={`${seatCharacter()} h-4 rounded-md border-[1px] border-slate-800`}/>
+      <div
+        className={`${seatCharacter()} h-4 flex items-center justify-between p-1 rounded-md border-[1px] border-slate-800 transition-all`}
+      >
+        {noBreakOver && (
+          <TriangleIcon className="text-gray-800 h-[13px] w-[13px]" />
+        )}
+        {noRecline && <div className="h-3 w-3 rounded-full bg-gray-800" />}
+      </div>
     </div>
   );
 };
