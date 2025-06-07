@@ -17,6 +17,14 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+body {
+  overflow: overlay;
+}
+
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
 .stroke {
   @apply border border-red-600;
 }
