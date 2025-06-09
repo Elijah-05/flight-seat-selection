@@ -9,12 +9,13 @@ import planeLayout from "/images/main-plane-body.png";
 import planeWingRight from "/images/right-wing.png";
 import planeWingLeft from "/images/left-wing.png";
 import planeSound from "/audio/plane-flight.mp3";
+import useScreenWidthMatch from "../hooks/useScreenWidthMatch";
 
 const containerVariants = {
   animate: {
     transition: {
       staggerChildren: 0.3,
-      delayChildren: 0.2,
+      delayChildren: 0.4,
     },
   },
 };
@@ -32,7 +33,7 @@ export default function SeatSelection() {
   const [exitPlane, setExitPlane] = useState(false);
   const [showStartText, setShowStartText] = useState(false);
   const tooltipTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  //   const isSmallDevice = useScreenWidthMatch();
+  const isSmallDevice = useScreenWidthMatch(780);
 
   function toggleSeatSelection(seatID: string) {
     if (selectedSeats.includes(seatID)) {
@@ -82,10 +83,10 @@ export default function SeatSelection() {
   function handleRestart() {
     setShowStartText(false);
     setSelectedSeats([]);
+    setExitPlane(false);
     setTimeout(() => {
-      setExitPlane(false);
       playSound(planeSound);
-    }, 500);
+    }, 700);
   }
 
   function playSound(src: string) {
@@ -94,7 +95,7 @@ export default function SeatSelection() {
   }
 
   return (
-    <div className="mx-auto pb-10 pt-2 w-fit">
+    <div className="w-full mx-auto pb-10 pt-2">
       <div
         className={`${exitPlane ? "sticky" : "relative"} w-full top-0 px-4 pt-2 sm:pt-6 max-w-[1200px] mx-auto gap-y-2 flex flex-col sm:gap-y-4`}
       >
@@ -157,18 +158,18 @@ export default function SeatSelection() {
             className="bg-red-500 text-white px-5 py-2 rounded-md hover:bg-red-600 transition active:scale-[0.98]"
             onClick={() => {
               setSelectedSeats([]);
-              setSelectionAmount(1);
+              setSelectionAmount(2);
             }}
           >
             Clear Selection
           </button>
-          {selectedSeats.length > 0 && (
+          {selectedSeats.length > 0 && !showStartText && (
             <button
               className={`group bg-green-600 flex items-center gap-2 text-white px-5 py-2 rounded-md  transition ${!exitPlane && "active:scale-[0.98] hover:bg-green-500"}`}
               onClick={() => {
                 setExitPlane(true);
                 setSelectionAmount(2);
-                playSound(planeSound);
+                setTimeout(() => playSound(planeSound), 100);
                 setTimeout(() => {
                   setShowStartText(true);
                 }, 1500); // matches exit animation duration
@@ -194,19 +195,17 @@ export default function SeatSelection() {
               y: 0,
               opacity: 1,
               transition: {
-                type: "spring",
-                stiffness: 50,
-                damping: 16,
-                duration: 2.5,
+                duration: isSmallDevice ? 1.5 : 2,
                 ease: "easeInOut",
               },
             }}
             exit={{
-              y: "-250vh",
+              y: isSmallDevice ? -2850 : -3300,
               opacity: 1,
-              transition: { duration: 2, ease: "easeInOut" },
+              transition: { duration: 2.5, ease: "easeInOut" },
             }}
-            className={`mx-auto w-[calc(100vw-18px)] sm:w-[calc(100vw-14px)] overflow-hidden relative mt-10 `}
+            style={{ willChange: "transform, opacity" }}
+            className={`mx-auto w-[calc(100vw-18px)] sm:w-[calc(100vw-14px)] overflow-hidden relative mt-3 sm:mt-6 `}
           >
             <div className="relative xxs:max-w-[398px] xs:max-w-[398px] sm:max-w-[456px] mx-auto">
               {/* Plane Body Image */}
@@ -214,6 +213,7 @@ export default function SeatSelection() {
                 src={planeLayout}
                 alt="plane"
                 className=" w-full object-contain"
+                style={{ willChange: "transform", transform: "translateZ(0)" }}
               />
               {/* Plane Left Wing */}
               <div className="absolute left-0 top-[35%] overflow">
@@ -221,6 +221,9 @@ export default function SeatSelection() {
                   src={planeWingLeft}
                   alt=""
                   className="w-full -translate-x-full object-contain"
+                  style={{
+                    willChange: "transform",
+                  }}
                 />
               </div>
               {/* Plane Right Wing */}
@@ -229,6 +232,9 @@ export default function SeatSelection() {
                   src={planeWingRight}
                   alt=""
                   className="w-ful translate-x-full object-contain"
+                  style={{
+                    willChange: "transform",
+                  }}
                 />
               </div>
             </div>
