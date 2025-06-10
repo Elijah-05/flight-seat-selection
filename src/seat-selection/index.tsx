@@ -1,15 +1,17 @@
+import { AnimatePresence, motion } from "framer-motion";
 import { useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { IoIosArrowRoundForward } from "react-icons/io";
 import { HandicapIcon, NoHandicapIcon, TriangleIcon } from "../assets";
 import Seat from "../components/Seat";
 import SeatDescription from "../components/SeatDescription";
-import allSeats from "../seats";
-import planeLayout from "/images/main-plane-body.png";
-import planeWingRight from "/images/right-wing.png";
-import planeWingLeft from "/images/left-wing.png";
-import planeSound from "/audio/plane-flight.mp3";
 import useScreenWidthMatch from "../hooks/useScreenWidthMatch";
+import allSeats from "../seats";
+import selectSound from "/audio/click.mp3";
+import openTubeSound from "/audio/open-tube.mp3";
+import planeSound from "/audio/plane-flight.mp3";
+import planeLayout from "/images/main-plane-body.png";
+import planeWingLeft from "/images/left-wing.png";
+import planeWingRight from "/images/right-wing.png";
 
 const containerVariants = {
   animate: {
@@ -43,13 +45,16 @@ export default function SeatSelection() {
         clearTimeout(tooltipTimeoutRef.current);
         tooltipTimeoutRef.current = null;
       }
+      playSound(selectSound);
     } else if (selectedSeats.length >= selectionAmount) {
       if (selectionAmount === 1) {
         setSelectedSeats([seatID]);
+        playSound(selectSound);
         return;
       }
 
       setTooltipSeat(seatID);
+      playSound(openTubeSound);
 
       // Clear existing timeout if it exists
       if (tooltipTimeoutRef.current) {
@@ -63,6 +68,7 @@ export default function SeatSelection() {
     } else {
       setSelectedSeats((prev) => [...prev, seatID]);
       setTooltipSeat(null);
+      playSound(selectSound);
 
       if (tooltipTimeoutRef.current) {
         clearTimeout(tooltipTimeoutRef.current);
@@ -82,6 +88,7 @@ export default function SeatSelection() {
 
   function handleRestart() {
     setShowStartText(false);
+
     setSelectedSeats([]);
     setExitPlane(false);
     setTimeout(() => {
@@ -205,7 +212,7 @@ export default function SeatSelection() {
               transition: { duration: 2.5, ease: "easeInOut" },
             }}
             style={{ willChange: "transform, opacity" }}
-            className={`mx-auto w-[calc(100vw-18px)] sm:w-[calc(100vw-14px)] overflow-hidden relative mt-3 sm:mt-6 `}
+            className={`mx-auto w-screen overflow-hidden relative mt-3 sm:mt-6 `}
           >
             <div className="relative xxs:max-w-[398px] xs:max-w-[398px] sm:max-w-[456px] mx-auto">
               {/* Plane Body Image */}
@@ -213,10 +220,13 @@ export default function SeatSelection() {
                 src={planeLayout}
                 alt="plane"
                 className=" w-full object-contain"
-                style={{ willChange: "transform", transform: "translateZ(0)" }}
+                style={{
+                  willChange: "transform",
+                  transform: "translateZ(0)",
+                }}
               />
               {/* Plane Left Wing */}
-              <div className="absolute left-0 top-[35%] overflow">
+              <div className="absolute w-[1020px] left-0 top-[32%] overflow">
                 <img
                   src={planeWingLeft}
                   alt=""
@@ -227,11 +237,11 @@ export default function SeatSelection() {
                 />
               </div>
               {/* Plane Right Wing */}
-              <div className="absolute right-0 top-[35%] overflow">
+              <div className="absolute w-[1020px] right-0 top-[32%] overflow">
                 <img
                   src={planeWingRight}
                   alt=""
-                  className="w-ful translate-x-full object-contain"
+                  className="w-full translate-x-full object-contain"
                   style={{
                     willChange: "transform",
                   }}
@@ -246,7 +256,10 @@ export default function SeatSelection() {
                   {columnSeat.map((rowSeat, j) =>
                     rowSeat ? (
                       rowSeat.hideSeat ? (
-                        <div className="w-[13vw] xxs:w-[13vw] xs:w-14 sm:w-16" />
+                        <div
+                          key={`hidden-${rowSeat.id}`}
+                          className="w-[13vw] xxs:w-[13vw] xs:w-14 sm:w-16"
+                        />
                       ) : (
                         <Seat
                           key={j}
